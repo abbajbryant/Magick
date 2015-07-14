@@ -7,19 +7,14 @@ use Illuminate\Database\Seeder;
 
 abstract class MtgJsonSeeder extends Seeder implements MtgJsonReader {
 
-    public function getJsonFilesPath()
+    public function getJsonFiles()
     {
-        return "/data";
-    }
-
-    public function getJsonFiles($path)
-    {
-        return Storage::disk('local')->files($path);
+        return Storage::disk('json')->files();
     }
 
     public function getJsonData($file, $associative = true)
     {
-        return json_decode(Storage::disk('local')->get($file), $associative);
+        return json_decode(Storage::disk('json')->get($file), $associative);
     }
 
 }

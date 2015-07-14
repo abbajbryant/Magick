@@ -6,18 +6,12 @@ namespace Magick\Data\Seed;
  * Interface MtgJsonReader
  * @package Magick\Data\Seed
  */
-interface MtgJsonReader
-{
-    /**
-     * @return mixed
-     */
-    public function getJsonFilesPath();
+interface MtgJsonReader {
 
     /**
-     * @param $path
      * @return mixed
      */
-    public function getJsonFiles($path);
+    public function getJsonFiles();
 
     /**
      * @param $file
@@ -25,4 +19,5 @@ interface MtgJsonReader
      * @return mixed
      */
     public function getJsonData($file, $associative = true);
+
 }

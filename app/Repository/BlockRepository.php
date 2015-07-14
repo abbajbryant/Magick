@@ -23,18 +23,4 @@ class BlockRepository {
         $this->resource = $resource;
     }
 
-
-    /**
-     * @param array $attributes
-     * @return static
-     */
-    public function firstOrCreate(array $attributes)
-    {
-        $attributes = array_only($attributes, [
-            'block',
-        ]);
-
-        return $this->resource->firstOrCreate($attributes);
-    }
-
 }

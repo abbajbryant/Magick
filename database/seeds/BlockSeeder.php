@@ -1,15 +1,14 @@
 <?php
 
+use Magick\Block;
 use Illuminate\Support\Collection;
 use Magick\Data\Seed\MtgJsonSeeder;
-use Magick\Repository\BlockRepository;
 use Illuminate\Contracts\Filesystem\Factory;
 
 /**
  * Class BlockSeeder
  */
-class BlockSeeder extends MtgJsonSeeder
-{
+class BlockSeeder extends MtgJsonSeeder {
 
     /**
      * @var BlockRepository
@@ -23,12 +22,10 @@ class BlockSeeder extends MtgJsonSeeder
 
     /**
      * @param Factory $storage
-     * @param BlockRepository $repo
      */
-    public function __construct(Factory $storage, BlockRepository $repo)
+    public function __construct(Factory $storage)
     {
-        $this->repo     = $repo;
-        $this->files    = new Collection($this->getJsonFiles($this->getJsonFilesPath()));
+        $this->files    = new Collection($this->getJsonFiles());
     }
 
     /**
@@ -38,15 +35,13 @@ class BlockSeeder extends MtgJsonSeeder
      */
     public function run()
     {
-
         foreach( $this->files as $file)
         {
             $data = $this->getJsonData($file);
 
             if(array_key_exists('block', $data))
             {
-                echo "Seeding Block: {$data['block']}" . PHP_EOL;
-                $this->repo->firstOrCreate($data);
+                Block::firstOrCreate(array_only($data, 'block'));
             }
         }
 

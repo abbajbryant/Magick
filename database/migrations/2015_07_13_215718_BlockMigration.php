@@ -13,8 +13,10 @@ class BlockMigration extends Migration
     public function up()
     {
         Schema::create('blocks', function(Blueprint $table){
-            $table->increments('id');
             $table->string('block');
+            $table->integer('set_count')->default(0);
+            $table->timestamps();
+            $table->primary('block');
         });
     }
 

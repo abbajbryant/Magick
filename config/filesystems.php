@@ -48,6 +48,11 @@ return [
             'root'   => storage_path('app'),
         ],
 
+        'json' => [
+            'driver' => 'local',
+            'root'   => app_path() . "/json",
+        ],
+
         'ftp' => [
             'driver'   => 'ftp',
             'host'     => 'ftp.example.com',

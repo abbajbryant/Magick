@@ -4,13 +4,26 @@ namespace Magick;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Block extends Model
-{
+/**
+ * Class Block
+ *
+ * @package Magick
+ */
+class Block extends Model {
 
+    /**
+     * @var array
+     */
     protected $fillable = [
         'block',
     ];
 
-    public $timestamps = false;
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sets()
+    {
+        return $this->hasMany('Magick\Set');
+    }
 
 }
