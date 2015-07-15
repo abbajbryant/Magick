@@ -2,28 +2,52 @@
 
 namespace Magick;
 
-use Illuminate\Database\Eloquent\Model;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class Block
  *
+ * @ORM\Entity
+ * @ORM\Table(name="blocks")
  * @package Magick
  */
-class Block extends Model {
+class Block {
 
     /**
-     * @var array
+     * @var integer
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer", options={"unsigned":true})
      */
-    protected $fillable = [
-        'block',
-    ];
+    protected $id;
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @var string
+     * @ORM\Column(type="string")
      */
-    public function sets()
+    public $name;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @ORM\OneToMany(targetEntity="Set", mappedBy="block")
+     */
+    public $sets;
+
+    public function __construct()
     {
-        return $this->hasMany('Magick\Set');
+        $this->sets = new ArrayCollection();
+    }
+
+    /**
+     * @param \Magick\Set $set
+     * @return $this
+     */
+    public function addSet(Set $set)
+    {
+        $this->sets->add($set);
+        $set->setBlock($this);
+        return $this;
     }
 
 }

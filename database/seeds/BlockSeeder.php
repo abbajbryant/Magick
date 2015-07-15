@@ -1,50 +1,74 @@
 <?php
 
 use Magick\Block;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
-use Magick\Data\Seed\MtgJsonSeeder;
-use Illuminate\Contracts\Filesystem\Factory;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class BlockSeeder
  */
-class BlockSeeder extends MtgJsonSeeder {
-
+class BlockSeeder extends Seeder {
     /**
-     * @var BlockRepository
+     * @var \Doctrine\ORM\EntityManagerInterface
      */
-    protected $repo;
+    protected $em;
 
     /**
-     * @var Collection
+     * @var \Illuminate\Support\Collection
      */
     protected $files;
 
     /**
-     * @param Factory $storage
+     * @var array
+     * @static
      */
-    public function __construct(Factory $storage)
+    protected static $defaultMapping = [
+        'block' => null,
+    ];
+
+    /**
+     * @var array
+     * @static
+     */
+    protected static $jsonKeys = [
+        'block',
+    ];
+
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->files    = new Collection($this->getJsonFiles());
+        $this->em = $em;
+        $this->files = new Collection(File::files(app_path()."/json"));
     }
 
     /**
-     * Seed our blocks.
-     *
      * @return void
      */
     public function run()
     {
-        foreach( $this->files as $file)
-        {
-            $data = $this->getJsonData($file);
-
-            if(array_key_exists('block', $data))
+        $this->files->each(function($file){
+            $data = $this->pluckData(json_decode(File::get($file), true));
+            if(!is_null($data['block']))
             {
-                Block::firstOrCreate(array_only($data, 'block'));
-            }
-        }
+                $block = new Block();
+                $block->name = $data['block'];
 
+                $this->em->persist($block);
+            }
+        });
+        $this->em->flush();
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    private function pluckData(array $data)
+    {
+        return array_merge(
+            self::$defaultMapping,
+            array_only($data, self::$jsonKeys)
+        );
     }
 
 }

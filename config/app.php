@@ -138,19 +138,19 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
+         * Third Party Service Providers...
+         */
+        Barryvdh\Debugbar\ServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Cyvelnet\Laravel5Fractal\Laravel5FractalServiceProvider::class,
+        Brouwers\LaravelDoctrine\DoctrineServiceProvider::class,
+
+        /*
          * Application Service Providers...
          */
         Magick\Providers\AppServiceProvider::class,
         Magick\Providers\EventServiceProvider::class,
         Magick\Providers\RouteServiceProvider::class,
-
-        /*
-         * Third Party Service Providers...
-         */
-        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-        Barryvdh\Debugbar\ServiceProvider::class,
-        Cyvelnet\Laravel5Fractal\Laravel5FractalServiceProvider::class,
-
     ],
 
     /*
@@ -199,6 +199,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
 
+
+        'EntityManager' => Brouwers\LaravelDoctrine\Facades\EntityManager::class,
     ],
 
 ];
