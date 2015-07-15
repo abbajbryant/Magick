@@ -151,6 +151,7 @@ return [
         Magick\Providers\AppServiceProvider::class,
         Magick\Providers\EventServiceProvider::class,
         Magick\Providers\RouteServiceProvider::class,
+        Magick\Providers\EntityServiceProvider::class,
     ],
 
     /*

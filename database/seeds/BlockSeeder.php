@@ -3,16 +3,23 @@
 use Magick\Block;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
+use Magick\Contracts\BlockRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class BlockSeeder
  */
 class BlockSeeder extends Seeder {
+
     /**
      * @var \Doctrine\ORM\EntityManagerInterface
      */
     protected $em;
+
+    /**
+     * @var \Magick\Repositories\Blocks
+     */
+    protected $blocks;
 
     /**
      * @var \Illuminate\Support\Collection
@@ -35,9 +42,10 @@ class BlockSeeder extends Seeder {
         'block',
     ];
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, BlockRepository $blocks)
     {
         $this->em = $em;
+        $this->blocks = $blocks;
         $this->files = new Collection(File::files(app_path()."/json"));
     }
 
@@ -47,24 +55,33 @@ class BlockSeeder extends Seeder {
     public function run()
     {
         $this->files->each(function($file){
-            $data = $this->pluckData(json_decode(File::get($file), true));
-            if(!is_null($data['block']))
-            {
-                $block = new Block();
-                $block->name = $data['block'];
-
-                $this->em->persist($block);
-            }
+            $this->storeBlock($this->pluckData($file), $this);
         });
-        $this->em->flush();
     }
 
     /**
-     * @param array $data
+     * @param $data
+     */
+    private function storeBlock($data)
+    {
+        if (!is_null($data['block'])) {
+            $block = $this->blocks->findByName($data['block']);
+            if (!$block) {
+                $block = new Block();
+                $block->name = $data['block'];
+                $this->em->persist($block);
+                $this->em->flush();
+            }
+        }
+    }
+
+    /**
+     * @param string $file
      * @return array
      */
-    private function pluckData(array $data)
+    private function pluckData($file)
     {
+        $data = json_decode(File::get($file), true);
         return array_merge(
             self::$defaultMapping,
             array_only($data, self::$jsonKeys)
